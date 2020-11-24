@@ -3,6 +3,7 @@
 require './vendor/autoload.php';
 
 use phpspider\core\phpspider;
+use phpspider\core\requests;
 
 
 /* Do NOT delete this comment */
@@ -44,13 +45,22 @@ $configs = [
     ]
 
 ];
-
 $spider = new phpspider($configs);
 $spider->on_content_page = function($page, $content, $phpspider)
 {
+    
+    return false;
+};
+
+$spider->on_extract_field = function($filedname, $data, $page)
+{
     $url_arr = explode('/', $page['url']);
     $id = $url_arr[4];
-    return false;
+    requests::set_header('cookie', 'security_session_verify=' . requests::get_cookies('www.zxcs.me')['security_session_verify']);
+    $vote = requests::get('http://www.zxcs.me/content/plugins/cgz_xinqing/cgz_xinqing_action.php?action=show&id=' . $id);
+    echo $vote;
+    $data = $data . ',' . $vote;
+    return $data;
 };
 
 $spider->start();
