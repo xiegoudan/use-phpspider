@@ -20,6 +20,15 @@ $configs = [
     'log_type' => 'error,debug,warn,info',
     'input_encoding' => 'utf-8', // 输入编码
     'output_encoding' => 'utf-8', // 输出编码
+    'tasknum' => 5,
+    'queue_config' => [
+        'host' => '127.0.0.1',
+        'port' => 6379,
+        'pass' => 'redis',
+        'db' => 5,
+        'prefix' => 'phpspider',
+        'timeout' => 100
+    ],
     'export' => [
         'type' => 'csv',
         'file' => './data/zxcs.csv'
@@ -90,7 +99,6 @@ $spider->on_extract_page = function($page, $data)
     $id = $url_arr[4];
     // requests::set_header('cookie', 'security_session_verify=' . requests::get_cookies('www.zxcs.me')['security_session_verify']);
     $vote = requests::get('http://www.zxcs.me/content/plugins/cgz_xinqing/cgz_xinqing_action.php?action=show&id=' . $id);
-    echo $vote;
     $vote = explode(',', $vote);
     $data['level1'] = $vote[0];
     $data['level2'] = $vote[1];
